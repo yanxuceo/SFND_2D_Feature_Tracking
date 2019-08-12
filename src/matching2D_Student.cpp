@@ -62,7 +62,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 
 
 // Use one of several types of state-of-art descriptors to uniquely identify keypoints
-// To Do: adding BRIEF, ORB, FREAK, AKAZE, SIFT
+// adding BRIEF, ORB, FREAK, AKAZE, SIFT
 void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, string descriptorType)
 {
     // select appropriate descriptor
@@ -90,6 +90,10 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
     else if(descriptorType.compare("AKAZE") == 0)
     {
         extractor = cv::AKAZE::create();
+    }
+    else if(descriptorType.compare("BRIEF") == 0)
+    {
+        extractor = cv::xfeatures2d::BriefDescriptorExtractor::create();
     }
 
     // perform feature description
@@ -150,7 +154,6 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
         
         std::cout << "ORB detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
-
     }
     else if(detectorType.compare("AKAZE") == 0)
     {
