@@ -20,15 +20,12 @@ class RingBuffer
     static const SizeType kCapacityLimit = kMaxCapacity;
 
     ///
-    /// @brief constructs a new Ring Buffer
+    /// @brief constructs a Ring Buffer
     ///
     /// @param[in] capacity maximum capacity that the buffer can hold. Must not exceed kMaxCapacity
     ///
-    explicit RingBuffer(SizeType capacity = kMaxCapacity):
-        head_(0U),
-        tail_(0U),
-        size_(0U),
-        capacity_(capacity)
+    explicit RingBuffer(SizeType capacity = kMaxCapacity)
+        :head_(0U), tail_(0U), size_(0U), capacity_(capacity)
     {
         SetMaxSize(capacity);
     }
@@ -233,7 +230,7 @@ template <typename T, unsigned int kMaxCapacity>
 bool RingBuffer<T, kMaxCapacity>::PopFront()
 {
     bool result = false;
-    // If there are no elements, we just return.
+    // If there are no elements, just return.
     if (!IsEmpty())
     {
         head_ = Increment(head_);
@@ -247,7 +244,7 @@ template <typename T, unsigned int kMaxCapacity>
 bool RingBuffer<T, kMaxCapacity>::PopBack()
 {
     bool result = false;
-    // If there are no elements, we just return.
+    // If there are no elements, just return.
     if (!IsEmpty())
     {
         tail_ = Decrement(tail_);
@@ -288,7 +285,6 @@ typename RingBuffer<T, kMaxCapacity>::Reference RingBuffer<T, kMaxCapacity>::Get
 {
     if (index >= capacity_)
     {
-        // Return the first element, just to return sth
         index = 0U;
         result = false;
     }
@@ -304,7 +300,6 @@ typename RingBuffer<T, kMaxCapacity>::ConstReference RingBuffer<T, kMaxCapacity>
 {
     if (index >= capacity_)
     {
-        // Return the first element, just to return sth
         index = 0U;
         result = false;
     }
