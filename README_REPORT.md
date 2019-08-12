@@ -227,10 +227,91 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 ### Part II: Performance Evaluation
 
 #### MP.7 Keypoints Counting
-Here 
+To count the number of keypoints on the preceding vehicle for all 10 images and take note of the distribution of their neighborhood size. Do this for all the detectors you have implemented.
+
+
+| Detector |Img 0|Img 1|Img 2|Img 3|Img 4|Img 5|Img 6|Img 7|Img 8|Img 9|
+| ---      | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Harris   | 17  | 14  | 18  | 21  | 26  | 43  | 18  | 31  | 26  | 34  |
+|Shi-Tomasi| 125 | 118 | 123 | 120 | 120 | 113 | 114 | 123 | 111 | 112 |
+| FAST     | 149 | 152 | 150 | 155 | 149 | 149 | 156 | 150 | 138 | 143 |
+| BRISK    | 264 | 282 | 282 | 277 | 297 | 279 | 289 | 272 | 266 | 254 |
+| ORB      | 92  | 102 | 106 | 113 | 109 | 125 | 130 | 129 | 127 | 128 |
+| AKAZE    | 166 | 157 | 161 | 155 | 163 | 164 | 173 | 175 | 177 | 179 |
+| SIFT     | 138 | 132 | 124 | 137 | 134 | 140 | 137 | 148 | 159 | 137 |
+
+Harris, Shi-Tomasi and FAST has similar, relatively small neighborhood size; and they are distributed spacially, no overlap with each other.
+
+
+
+BRISK, however, has obvious large neighborhood size; and they look like cluttered and overlapped with each other.
+
+ORB
+
+AKAZE
+
+SIFT
+
  
 #### MP.8 Matching Statistics
-The matched keypoints
+To count the number of matched keypoints for all 10 images using all possible combinations of detectors and descriptors. In the matching step, use the BF approach with the descriptor distance ratio set to 0.8.
+
+**_Note_**
+L1 and L2 norms are preferable choices for SIFT and SURF descriptors, NORM_HAMMING should be used with ORB, BRISK, BRIEF, FREAK and AKAZE. NORM_HAMMING2 should be used with ORB when WTA_K==3 or 4 (see ORB::ORB constructor description).
+
+| Combination(detect + descriptor)| # Matched Keypoints | Detection Time | Extraction Time | Matching Time |
+| ---                             | ---                 | ---            | ---             | ---           |
+| **_Group 1_**                   |                     |                |                 |               |
+| Harris + SIFT                   |                     |                |                 |               |
+| Harris + BRISK                  |                     |                |                 |               |
+| Harris + ORB                    |                     |                |                 |               |
+| Harris + FREAK                  |                     |                |                 |               | 
+| Harris + AKAZE                  |                     |                |                 |               |
+| Harris + BRIEF                  |                     |                |                 |               |
+| **_Group 2_**                   |                     |                |                 |               | 
+| Shi-Tomasi + SIFT               |                     |                |                 |               |
+| Shi-Tomasi + BRISK              |                     |                |                 |               |
+| Shi-Tomasi + ORB                |                     |                |                 |               |
+| Shi-Tomasi + FREAK              |                     |                |                 |               | 
+| Shi-Tomasi + AKAZE              |                     |                |                 |               |
+| Shi-Tomasi + BRIEF              |                     |                |                 |               |
+| **_Group 3_**                   |                     |                |                 |               | 
+| FAST + SIFT                     |                     |                |                 |               |
+| FAST + BRISK                    |                     |                |                 |               |
+| FAST + ORB                      |                     |                |                 |               |
+| FAST + FREAK                    |                     |                |                 |               | 
+| FAST + AKAZE                    |                     |                |                 |               |
+| FAST + BRIEF                    |                     |                |                 |               |
+| **_Group 4_**                   |                     |                |                 |               | 
+| BRISK + SIFT                    |                     |                |                 |               |
+| BRISK + BRISK                   |                     |                |                 |               |
+| BRISK + ORB                     |                     |                |                 |               |
+| BRISK + FREAK                   |                     |                |                 |               | 
+| BRISK + AKAZE                   |                     |                |                 |               |
+| BRISK + BRIEF                   |                     |                |                 |               |
+| **_Group 5_**                   |                     |                |                 |               | 
+| ORB + SIFT                      |                     |                |                 |               |
+| ORB + BRISK                     |                     |                |                 |               |
+| ORB + ORB                       |                     |                |                 |               |
+| ORB + FREAK                     |                     |                |                 |               | 
+| ORB + AKAZE                     |                     |                |                 |               |
+| ORB + BRIEF                     |                     |                |                 |               |
+| **_Group 6_**                   |                     |                |                 |               | 
+| AKAZE + SIFT                    |                     |                |                 |               |
+| AKAZE + BRISK                   |                     |                |                 |               |
+| AKAZE + ORB                     |                     |                |                 |               |
+| AKAZE + FREAK                   |                     |                |                 |               | 
+| AKAZE + AKAZE                   |                     |                |                 |               |
+| AKAZE + BRIEF                   |                     |                |                 |               |
+| **_Group 7_**                   |                     |                |                 |               | 
+| SIFT + SIFT                     |                     |                |                 |               |
+| SIFT + BRISK                    |                     |                |                 |               |
+| SIFT + ORB                      |                     |                |                 |               |
+| SIFT + FREAK                    |                     |                |                 |               | 
+| SIFT + AKAZE                    |                     |                |                 |               |
+| SIFT + BRIEF                    |                     |                |                 |               |
+(The detection time is for the whole image.)
+
 
 #### MP.9 Time Consumption
-Time it takes
+To log the time it takes for keypoint detection and descriptor extraction. The results must be entered into a spreadsheet and based on this information you will then suggest the TOP3 detector / descriptor combinations as the best choice for our purpose of detecting keypoints on vehicles. Finally, in a short text, please justify your recommendation based on your observations and on the data you collected.
