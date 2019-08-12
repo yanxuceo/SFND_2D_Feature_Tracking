@@ -16,31 +16,111 @@ class RingBuffer
     
     static const SizeType kCapacityLimit = kMaxCapacity;
 
-    ///
-    /// @brief constructs a Ring Buffer
-    ///
-    /// @param[in] capacity maximum capacity that the buffer can hold. Must not exceed kMaxCapacity
-    ///
     explicit RingBuffer(SizeType capacity = kMaxCapacity)
         :head_(0U), tail_(0U), size_(0U), capacity_(capacity)
     {
         SetMaxSize(capacity);
     }
 
-    /// @brief destructor
-    ~RingBuffer()
-    {
-    }
-    ...
-    ...
+    ~RingBuffer() {}
+
+    // ignore concrete member functions here
 }
 ```
 
 #### MP.2 Keypoint Detection
+Implement detectors HARRIS, FAST, BRISK, ORB, AKAZE, and SIFT and make them selectable by setting a string accordingly.
 
+
+1. Traditional Harris detector for keypoints detection is given by this function. 
+```
+void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool bVis)
+{
+    int blockSize = 2;      // a blockSize x blockSize neighborhood for every pixel
+    int apertureSize = 3;   // for sobel operator
+    int minResponse = 100;  // minimum value for a corner in the 8-bit scaled response matrix
+    double k = 0.04;        // Harris parameter
+
+    cv::Mat dst, dst_norm, dst_norm_scaled;
+    dst = cv::Mat::zeros(img.size(), CV_32FC1);
+    cv::cornerHarris(img, dst, blockSize, apertureSize, k, cv::BORDER_DEFAULT);
+    cv::normalize(dst, dst_norm, 0, 255, cv::NORM_MINMAX, CV_32FC1, cv::Mat());
+    cv::convertScaleAbs(dst_norm, dst_norm_scaled);
+
+    // look for prominent corners and keypoints
+    double maxOverlap = 0.0;
+    for(size_t i = 0; i < dst_norm.rows; i++)
+    {
+        for(size_t j = 0; j < dst_norm.cols; j++)
+        {
+            int response = (int)dst_norm.at<float>(i,j);
+            if(response > minResponse)
+            {
+                // only store points above a threshold
+                cv::KeyPoint newKeypoint;
+                newKeypoint.pt = cv::Point2f(j, i);
+                newKeypoint.size = 2*apertureSize;
+                newKeypoint.response = response;
+
+                // ignore codes below for perform non-maximal suppression
+            }
+        }
+    }
+}
+```
+
+2. The other modern detector including FAST, BRISK, ORB, AKAZE, and SIFT are given in this function below, in which a parameter called **_detectorType_** makes them selectable.
+```
+void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::string detectorType, bool bVis)
+{
+    cv::Ptr<cv::FeatureDetector> detector;
+
+    if (detectorType.compare("FAST") == 0)
+    {
+        int threshold = 30;     
+        int bNMS = true;      
+        cv::FastFeatureDetector::DetectorType type = cv::FastFeatureDetector::TYPE_9_16;
+       
+        detector = cv::FastFeatureDetector::create(threshold, bNMS, type);
+        detector->detect(img, keypoints);
+    }
+    else if(detectorType.compare("BRISK") == 0)
+    {
+        detector = cv::BRISK::create();
+        detector->detect(img, keypoints);
+    }
+    else if(detectorType.compare("SIFT") == 0)
+    {
+        detector = cv::xfeatures2d::SIFT::create();
+        detector->detect(img, keypoints);
+    }
+    else if(detectorType.compare("ORB") == 0)
+    {   
+        detector = cv::ORB::create();
+        detector->detect(img, keypoints);
+    }
+    else if(detectorType.compare("AKAZE") == 0)
+    {
+        detector = cv::AKAZE::create();
+        detector->detect(img, keypoints);
+    }
+
+    // visualize results
+    if (bVis)
+    {
+        cv::Mat visImage = img.clone();
+        cv::drawKeypoints(img, keypoints, visImage, cv::Scalar::all(-1), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+        string windowName = "Modern Detector Results";
+        cv::namedWindow(windowName, 2);
+        imshow(windowName, visImage);
+
+        cv::waitKey(0);
+    }
+}
+```
 
 #### MP.3 Keypoint Removal
-To remove all keypoints outside of a pre-defined rectangle and only use the keypoints within the rectangle for further processing. Here, a lambda expression is used to loop through all 
+To remove all keypoints outside of a pre-defined rectangle and only use the keypoints within the rectangle for further processing. A lambda expression is used to loop through all detected keypoints, and  _std::vector::erase_, _std::remove_if_, _cv::Rect::contains_ are incorporated to finish this job.
 
 ```
 bool bFocusOnVehicle = true;
@@ -53,13 +133,95 @@ if (bFocusOnVehicle)
 ```
 
 #### MP.4 Keypoint Descriptors
-Implements descriptors
+Implements descriptors BRIEF, ORB, FREAK, AKAZE and SIFT and make them selectable by setting a string accordingly. Similar with above keypoint detection, a miscellaneous function including BRIEF, ORB, FREAK, AKAZE and SIFT descriptors are given in this function, in which a parameter called **_detectorType_** makes them selectable.
 
-#### MP.5 Descriptor Matching
-FLANN
+```
+void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, string descriptorType)
+{
+    cv::Ptr<cv::DescriptorExtractor> extractor;
 
-#### MP.6 Descriptor Distance Ratio
-For the K-Nearest-Neighbor matching,
+    if (descriptorType.compare("BRISK") == 0)
+    {
+        extractor = cv::BRISK::create();
+    }
+    else if(descriptorType.compare("SIFT") == 0)
+    {
+        extractor = cv::xfeatures2d::SiftDescriptorExtractor::create();
+    }
+    else if(descriptorType.compare("ORB") == 0)
+    {
+        extractor = cv::ORB::create();
+    }
+    else if(descriptorType.compare("FREAK") == 0)
+    {
+        extractor = cv::xfeatures2d::FREAK::create();
+    }
+    else if(descriptorType.compare("AKAZE") == 0)
+    {
+        extractor = cv::AKAZE::create();
+    }
+    else if(descriptorType.compare("BRIEF") == 0)
+    {
+        extractor = cv::xfeatures2d::BriefDescriptorExtractor::create();
+    }
+
+    // perform feature description
+    extractor->compute(img, keypoints, descriptors);
+}
+
+```
+
+#### MP.5 Descriptor Matching && MP.6 Descriptor Distance Ratio
+Implement FLANN matching as well as k-nearest neighbor selection. Both methods must be selectable using the respective strings in the main function; Use the KNN matching to implement the descriptor distance ratio test, which looks at the ratio of best vs. second-best match to decide whether to keep an associated pair of keypoints.
+
+All these three tasks are realized in this function, k = 2; distance ratio = 0.8;
+```
+void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::KeyPoint> &kPtsRef, cv::Mat &descSource, cv::Mat &descRef,
+                      std::vector<cv::DMatch> &matches, std::string descriptorType, std::string matcherType, std::string selectorType)
+{
+    bool crossCheck = false;
+    cv::Ptr<cv::DescriptorMatcher> matcher;
+
+    if (matcherType.compare("MAT_BF") == 0)
+    {
+        int normType = descriptorType.compare("DES_BINARY") == 0 ? cv::NORM_HAMMING : cv::NORM_L2;
+        matcher = cv::BFMatcher::create(normType, crossCheck);
+    }
+    else if (matcherType.compare("MAT_FLANN") == 0)
+    {
+        if (descSource.type() != CV_32F)
+        { 
+            descSource.convertTo(descSource, CV_32F);
+            descRef.convertTo(descRef, CV_32F);
+        }
+        matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+    }
+
+    // perform matching task
+    if (selectorType.compare("SEL_NN") == 0)
+    { 
+        // Finds the best match for each descriptor in desc1
+        matcher->match(descSource, descRef, matches);
+    }
+    else if (selectorType.compare("SEL_KNN") == 0)
+    { 
+        // k nearest neighbors (k = 2)
+        vector<vector<cv::DMatch>> knn_matches;
+        matcher->knnMatch(descSource, descRef, knn_matches, 2);
+      
+        // Implement k-nearest-neighbor matching and filter matches using descriptor distance ratio test
+        double minDescDistRatio = 0.8;
+        for(auto it = knn_matches.begin(); it != knn_matches.end(); ++it)
+        {
+            if((*it)[0].distance < minDescDistRatio * (*it)[1].distance)
+            {
+                matches.push_back((*it)[0]);
+            }
+        }
+        std::cout << "# keypoints removed = " << knn_matches.size() - matches.size() << std::endl;
+    }
+}
+```
 
 
 ### Part II: Performance Evaluation
