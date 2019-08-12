@@ -25,7 +25,6 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
             descSource.convertTo(descSource, CV_32F);
             descRef.convertTo(descRef, CV_32F);
         }
-
         matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
     }
 
@@ -190,6 +189,9 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
 
     cv::Mat dst, dst_norm, dst_norm_scaled;
     dst = cv::Mat::zeros(img.size(), CV_32FC1);
+
+    double t = (double)cv::getTickCount();
+
     cv::cornerHarris(img, dst, blockSize, apertureSize, k, cv::BORDER_DEFAULT);
     cv::normalize(dst, dst_norm, 0, 255, cv::NORM_MINMAX, CV_32FC1, cv::Mat());
     cv::convertScaleAbs(dst_norm, dst_norm_scaled);
@@ -208,6 +210,7 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
                 newKeypoint.pt = cv::Point2f(j, i);
                 newKeypoint.size = 2*apertureSize;
                 newKeypoint.response = response;
+                newKeypoint.class_id = 1;
 
                 // perform non-maximal suppression in local neighbourhood around new key point
                 bool bOverlap = false;
@@ -232,6 +235,9 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
             }
         }
     }
+    t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+    std::cout << "Harris detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+
     // visualize results
     if (bVis)
     {
