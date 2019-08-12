@@ -43,13 +43,13 @@ class RingBuffer
 To remove all keypoints outside of a pre-defined rectangle and only use the keypoints within the rectangle for further processing. Here, a lambda expression is used to loop through all 
 
 ```
-    bool bFocusOnVehicle = true;
-    cv::Rect vehicleRect(535, 180, 180, 150);
-    if (bFocusOnVehicle)
-    {
-        keypoints.erase(std::remove_if(keypoints.begin(), keypoints.end(), [&vehicleRect](const cv::KeyPoint &r){return !(vehicleRect.contains(r.pt));}),
+bool bFocusOnVehicle = true;
+cv::Rect vehicleRect(535, 180, 180, 150);
+if (bFocusOnVehicle)
+{
+    keypoints.erase(std::remove_if(keypoints.begin(), keypoints.end(), [&vehicleRect](const cv::KeyPoint &r){return !(vehicleRect.contains(r.pt));}),
                 keypoints.end());
-    }
+}
 ```
 
 #### MP.4 Keypoint Descriptors
