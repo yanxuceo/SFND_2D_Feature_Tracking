@@ -115,7 +115,13 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     }
     else if(detectorType.compare("AKAZE") == 0)
     {
-
+        detector = cv::AKAZE::create();
+         
+        t = (double)cv::getTickCount();
+        detector->detect(img, keypoints);
+        t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+        
+        std::cout << "AKAZE detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
     }
 
 
