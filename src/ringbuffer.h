@@ -144,7 +144,6 @@ class RingBuffer
 
     SizeType GetIndexAdjustedForBoundaries(SizeType index) const
     {
-        //TODO: consider bitwise& instead of modulus.
         return index % capacity_;
     }
 
