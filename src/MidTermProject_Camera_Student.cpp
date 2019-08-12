@@ -112,7 +112,7 @@ int main(int argc, const char *argv[])
         //// EOF STUDENT ASSIGNMENT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
-        bool bLimitKpts = true;
+        bool bLimitKpts = false;
         if (bLimitKpts)
         {
             int maxKeypoints = 50;
@@ -151,9 +151,9 @@ int main(int argc, const char *argv[])
             /* MATCH KEYPOINT DESCRIPTORS */
 
             vector<cv::DMatch> matches;
-            string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
-            string descriptorType = "DES_HOG"; // DES_BINARY, DES_HOG
-            string selectorType = "SEL_NN";       // SEL_NN, SEL_KNN
+            string matcherType = "MAT_FLANN";     // MAT_BF, MAT_FLANN
+            string descriptorType = "DES_HOG";    // DES_BINARY, DES_HOG
+            string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
 
             //// STUDENT ASSIGNMENT
             //// TASK MP.5 -> add FLANN matching in file matching2D.cpp
@@ -168,7 +168,7 @@ int main(int argc, const char *argv[])
             // store matches in current data frame
             dataBuffer.Back(result).kptMatches = matches;
 
-            cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
+            std::cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << std::endl;
 
             // visualize matches between current and previous image
             bVis = true;
@@ -184,7 +184,7 @@ int main(int argc, const char *argv[])
                 string windowName = "Matching keypoints between two camera images";
                 cv::namedWindow(windowName, 7);
                 cv::imshow(windowName, matchImg);
-                cout << "Press key to continue to next image" << endl;
+                std::cout << "Press key to continue to next image" << std::endl;
                 
                 cv::waitKey(0); // wait for key to be pressed
             }
