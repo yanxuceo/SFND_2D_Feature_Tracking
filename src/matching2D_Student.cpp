@@ -94,6 +94,20 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
     }
     else if(detectorType.compare("SIFT") == 0)
     {
+        detector = cv::xfeatures2d::SIFT::create();
+
+        t = (double)cv::getTickCount();
+        detector->detect(img, keypoints);
+        t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+        
+        std::cout << "SIFT detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    }
+    else if(detectorType.compare("ORB") == 0)
+    {
+
+    }
+    else if(detectorType.compare("AKAZE") == 0)
+    {
 
     }
 
