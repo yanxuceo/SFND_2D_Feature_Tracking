@@ -123,6 +123,11 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
         
         std::cout << "FAST with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+
+        for(auto &keypoint : keypoints)
+        {
+            keypoint.class_id = 1;
+        }
     }
     else if(detectorType.compare("BRISK") == 0)
     {
