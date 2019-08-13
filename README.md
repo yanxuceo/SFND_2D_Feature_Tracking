@@ -225,6 +225,8 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 
 
 ## Part II: Performance Evaluation
+My laptop Specification: (Four years old Acer E5-473)
+Intel i5-5200U; Intel HD Graphics 5500; 8GB DDR3 L Memory
 
 ### MP.7 Keypoints Counting
 To count the number of keypoints on the preceding vehicle for all 10 images and take note of the distribution of their neighborhood size. Do this for all the detectors you have implemented.
@@ -243,17 +245,40 @@ The number of keypoints in the table is those after performing TASK MP.3 -> only
 | SIFT     | 138 | 132 | 124 | 137 | 134 | 140 | 137 | 148 | 159 | 137 |  138  |
 
 
-Harris, Shi-Tomasi and FAST has similar, relatively small neighborhood size; and they are distributed spacially, no overlap with each other.
+#### Distribution of neighborhood
+Harris, Shi-Tomasi and FAST has similar, relatively small neighborhood size; and they are distributed spacially, no overlap with each other. As can be seen in the figure below - Harris Keypoints.
+
+**_Harris Keypoints_**
+<p align = "center">
+  <img src="media/HARRIS_keypoint.png"  width="640" height="420">
+</p>
+
+BRISK and ORB, however, have obvious larger neighborhood size; and they look like cluttered and overlapped with each other.
+
+**_BRISK Keypoints_**
+<p align = "center">
+  <img src="media/BRISK_Keypoint.png"  width="640" height="420">
+</p>
 
 
+**_ORB Keypoints_**
+<p align = "center">
+  <img src="media/ORB_keypoint.png"  width="640" height="420">
+</p>
 
-BRISK, however, has obvious large neighborhood size; and they look like cluttered and overlapped with each other.
 
-ORB
+AKAZE and SIFT have similar property in terms of the neighborhood distribution size, there are small and relatively large keypoint radius, and they are distributed uniformly on the detected objects.
+**_AKAZE Keypoints_**
+<p align = "center">
+  <img src="media/AKAZE_keypoint_1.png"  width="640" height="420">
+</p>
 
-AKAZE
 
-SIFT
+**_SIFT Keypoints_**
+<p align = "center">
+  <img src="media/SIFT_keypoint_1.png"  width="640" height="420">
+</p>
+
 
  
 ### MP.8 Matching Statistics
