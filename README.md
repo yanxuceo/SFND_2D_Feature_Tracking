@@ -1,7 +1,7 @@
-## Camera Based 2D Feature Tracking
+# Camera Based 2D Feature Tracking
 
-### Part I: Solution Description
-#### MP.1 Data Buffer Optimization
+## Part I: Solution Description
+### MP.1 Data Buffer Optimization
 Implements a ring buffer where new elements are added to tail and older are removed from head. And in this case, set the capacity of this buffer as 2, which represents two adjacent frame reading from sequences of traffic images. Part of a template class definition can be seen below.
 
 ```
@@ -24,11 +24,11 @@ class RingBuffer
 
     ~RingBuffer() {}
 
-    // ignore concrete member functions here
+    // ignore concrete member functions
 }
 ```
 
-#### MP.2 Keypoint Detection
+### MP.2 Keypoint Detection
 Implement detectors HARRIS, FAST, BRISK, ORB, AKAZE, and SIFT and make them selectable by setting a string accordingly.
 
 
@@ -119,7 +119,7 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
 }
 ```
 
-#### MP.3 Keypoint Removal
+### MP.3 Keypoint Removal
 To remove all keypoints outside of a pre-defined rectangle and only use the keypoints within the rectangle for further processing. A lambda expression is used to loop through all detected keypoints, and  _std::vector::erase_, _std::remove_if_, _cv::Rect::contains_ are incorporated to finish this job.
 
 ```
@@ -132,7 +132,7 @@ if (bFocusOnVehicle)
 }
 ```
 
-#### MP.4 Keypoint Descriptors
+### MP.4 Keypoint Descriptors
 Implements descriptors BRIEF, ORB, FREAK, AKAZE and SIFT and make them selectable by setting a string accordingly. Similar with above keypoint detection, a miscellaneous function including BRIEF, ORB, FREAK, AKAZE and SIFT descriptors are given in this function, in which a parameter called **_detectorType_** makes them selectable.
 
 ```
@@ -171,7 +171,7 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
 
 ```
 
-#### MP.5 Descriptor Matching && MP.6 Descriptor Distance Ratio
+### MP.5 Descriptor Matching && MP.6 Descriptor Distance Ratio
 Implement FLANN matching as well as k-nearest neighbor selection. Both methods must be selectable using the respective strings in the main function; Use the KNN matching to implement the descriptor distance ratio test, which looks at the ratio of best vs. second-best match to decide whether to keep an associated pair of keypoints.
 
 All these three tasks are realized in this function, k = 2; distance ratio = 0.8;
@@ -224,21 +224,23 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 ```
 
 
-### Part II: Performance Evaluation
+## Part II: Performance Evaluation
 
-#### MP.7 Keypoints Counting
+### MP.7 Keypoints Counting
 To count the number of keypoints on the preceding vehicle for all 10 images and take note of the distribution of their neighborhood size. Do this for all the detectors you have implemented.
 
+**_Note_**
+The number of keypoints in the table is those after performing TASK MP.3 -> only keep keypoints on the preceding vehicle.
 
-| Detector |Img 0|Img 1|Img 2|Img 3|Img 4|Img 5|Img 6|Img 7|Img 8|Img 9|
-| ---      | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Harris   | 17  | 14  | 18  | 21  | 26  | 43  | 18  | 31  | 26  | 34  |
-|Shi-Tomasi| 125 | 118 | 123 | 120 | 120 | 113 | 114 | 123 | 111 | 112 |
-| FAST     | 149 | 152 | 150 | 155 | 149 | 149 | 156 | 150 | 138 | 143 |
-| BRISK    | 264 | 282 | 282 | 277 | 297 | 279 | 289 | 272 | 266 | 254 |
-| ORB      | 92  | 102 | 106 | 113 | 109 | 125 | 130 | 129 | 127 | 128 |
-| AKAZE    | 166 | 157 | 161 | 155 | 163 | 164 | 173 | 175 | 177 | 179 |
-| SIFT     | 138 | 132 | 124 | 137 | 134 | 140 | 137 | 148 | 159 | 137 |
+| Detector |Img 0|Img 1|Img 2|Img 3|Img 4|Img 5|Img 6|Img 7|Img 8|Img 9|Average|
+| ---      | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---   |
+| Harris   | 17  | 14  | 18  | 21  | 26  | 43  | 18  | 31  | 26  | 34  |  25   |
+|Shi-Tomasi| 125 | 118 | 123 | 120 | 120 | 113 | 114 | 123 | 111 | 112 |  118  |
+| FAST     | 149 | 152 | 150 | 155 | 149 | 149 | 156 | 150 | 138 | 143 |  149  |
+| BRISK    | 264 | 282 | 282 | 277 | 297 | 279 | 289 | 272 | 266 | 254 |  276  |
+| ORB      | 92  | 102 | 106 | 113 | 109 | 125 | 130 | 129 | 127 | 128 |  116  |
+| AKAZE    | 166 | 157 | 161 | 155 | 163 | 164 | 173 | 175 | 177 | 179 |  167  |
+| SIFT     | 138 | 132 | 124 | 137 | 134 | 140 | 137 | 148 | 159 | 137 |  138  |
 
 
 Harris, Shi-Tomasi and FAST has similar, relatively small neighborhood size; and they are distributed spacially, no overlap with each other.
@@ -254,65 +256,128 @@ AKAZE
 SIFT
 
  
-#### MP.8 Matching Statistics
+### MP.8 Matching Statistics
 To count the number of matched keypoints for all 10 images using all possible combinations of detectors and descriptors. In the matching step, use the BF approach with the descriptor distance ratio set to 0.8.
 
-**_Note_**
+**_Note 1_**
 L1 and L2 norms are preferable choices for SIFT and SURF descriptors, NORM_HAMMING should be used with ORB, BRISK, BRIEF, FREAK and AKAZE. NORM_HAMMING2 should be used with ORB when WTA_K==3 or 4 (see ORB::ORB constructor description).
 
-| Combination(detect + descriptor)| # Matched Keypoints | Detection Time | Extraction Time | Matching Time |
-| ---                             | ---                 | ---            | ---             | ---           |
-| **_Group 1_**                   |                     |                |                 |               |
-| Harris + SIFT                   |                     |                |                 |               |
-| Harris + BRISK                  |                     |                |                 |               |
-| Harris + ORB                    |                     |                |                 |               |
-| Harris + FREAK                  |                     |                |                 |               | 
-| Harris + AKAZE                  |                     |                |                 |               |
-| Harris + BRIEF                  |                     |                |                 |               |
-| **_Group 2_**                   |                     |                |                 |               | 
-| Shi-Tomasi + SIFT               |                     |                |                 |               |
-| Shi-Tomasi + BRISK              |                     |                |                 |               |
-| Shi-Tomasi + ORB                |                     |                |                 |               |
-| Shi-Tomasi + FREAK              |                     |                |                 |               | 
-| Shi-Tomasi + AKAZE              |                     |                |                 |               |
-| Shi-Tomasi + BRIEF              |                     |                |                 |               |
-| **_Group 3_**                   |                     |                |                 |               | 
-| FAST + SIFT                     |                     |                |                 |               |
-| FAST + BRISK                    |                     |                |                 |               |
-| FAST + ORB                      |                     |                |                 |               |
-| FAST + FREAK                    |                     |                |                 |               | 
-| FAST + AKAZE                    |                     |                |                 |               |
-| FAST + BRIEF                    |                     |                |                 |               |
-| **_Group 4_**                   |                     |                |                 |               | 
-| BRISK + SIFT                    |                     |                |                 |               |
-| BRISK + BRISK                   |                     |                |                 |               |
-| BRISK + ORB                     |                     |                |                 |               |
-| BRISK + FREAK                   |                     |                |                 |               | 
-| BRISK + AKAZE                   |                     |                |                 |               |
-| BRISK + BRIEF                   |                     |                |                 |               |
-| **_Group 5_**                   |                     |                |                 |               | 
-| ORB + SIFT                      |                     |                |                 |               |
-| ORB + BRISK                     |                     |                |                 |               |
-| ORB + ORB                       |                     |                |                 |               |
-| ORB + FREAK                     |                     |                |                 |               | 
-| ORB + AKAZE                     |                     |                |                 |               |
-| ORB + BRIEF                     |                     |                |                 |               |
-| **_Group 6_**                   |                     |                |                 |               | 
-| AKAZE + SIFT                    |                     |                |                 |               |
-| AKAZE + BRISK                   |                     |                |                 |               |
-| AKAZE + ORB                     |                     |                |                 |               |
-| AKAZE + FREAK                   |                     |                |                 |               | 
-| AKAZE + AKAZE                   |                     |                |                 |               |
-| AKAZE + BRIEF                   |                     |                |                 |               |
-| **_Group 7_**                   |                     |                |                 |               | 
-| SIFT + SIFT                     |                     |                |                 |               |
-| SIFT + BRISK                    |                     |                |                 |               |
-| SIFT + ORB                      |                     |                |                 |               |
-| SIFT + FREAK                    |                     |                |                 |               | 
-| SIFT + AKAZE                    |                     |                |                 |               |
-| SIFT + BRIEF                    |                     |                |                 |               |
+**_Note 2_**
+The second column is the number of detected keypoints on the whole image; the fifth column is those matched keypoints only focusing on the preceding vehicles region. Besides, all the numbers and time statistics for each combination are the average value on 10 sequence of images.
 
 
 
-#### MP.9 Time Consumption
+| Combination(detect + descriptor)| # Detected Keypoints| Detection Time | Extraction Time | #Matched Keypoint | Matching Time |
+| ---                             | ---                 | ---            | ---             | ---               | ---           |
+| **_Group 1_**                   |                     |                |                 |                   |               |
+| Harris + SIFT                   |      172            |    17.5ms      |    30ms         |     18            |    0.08ms     |
+| Harris + BRISK                  |      172            |    17.5ms      |   0.94ms        |     16            |    0.33ms     |
+| Harris + ORB                    |      172            |    17.5ms      |   2.58ms        |     17            |    0.37ms     |
+| Harris + FREAK                  |      172            |    17.5ms      |   49.10ms       |     16            |    0.17ms     |
+| Harris + AKAZE                  |      172            |    17.5ms      |   76.35ms       |     19            |    0.07ms     |
+| Harris + BRIEF                  |      172            |    17.5ms      |    2.62ms       |     19            |    0.15ms     |
+| **_Group 2_**                   |                     |                |                 |                   |               |
+| Shi-Tomasi + SIFT               |      1342           |    15.8ms      |     29ms        |     103           |    0.53ms     |
+| Shi-Tomasi + BRISK              |      1342           |    15.8ms      |   1.65ms        |      86           |    0.25ms     |
+| Shi-Tomasi + ORB                |      1342           |    15.8ms      |   2.68ms        |     101           |    0.91ms     |
+| Shi-Tomasi + FREAK              |      1342           |    15.8ms      |  50.50ms        |      86           |    0.36ms     |
+| Shi-Tomasi + AKAZE              |      1342           |    15.8ms      |  80.47ms        |     108           |    0.33ms     |   
+| Shi-Tomasi + BRIEF              |      1342           |    15.8ms      |   2.55ms        |     110           |    0.74ms     |
+| **_Group 3_**                   |                     |                |                 |                   |               |
+| FAST + SIFT                     |      1787           |    1.47ms      |     34ms        |     117           |    0.90ms     | 
+| FAST + BRISK                    |      1787           |    1.47ms      |   1.70ms        |     100           |    0.36ms     |
+| FAST + ORB                      |      1787           |    1.47ms      |   3.15ms        |     115           |    0.93ms     |
+| FAST + FREAK                    |      1787           |    1.47ms      |     52ms        |     101           |    0.76ms     |
+| FAST + AKAZE                    |      1787           |    1.47ms      |     80ms        |     123           |    0.44ms     |
+| FAST + BRIEF                    |      1787           |    1.47ms      |   2.43ms        |     117           |    1.24ms     |
+| **_Group 4_**                   |                     |                |                 |                   |         |
+| BRISK + SIFT                    |      2711           |      40ms      |     51ms        |     180           |    1.68ms     |
+| BRISK + BRISK                   |      2711           |      40ms      |   2.40ms        |     170           |    0.98ms     |
+| BRISK + ORB                     |      2711           |      40ms      |   9.84ms        |     160           |    0.89ms     |
+| BRISK + FREAK                   |      2711           |      40ms      |  47.84ms        |     161           |    0.86ms     |
+| BRISK + AKAZE                   |      2711           |      40ms      |  76.50ms        |     156           |    1.50ms     |
+| BRISK + BRIEF                   |      2711           |      40ms      |    3.2ms        |     186           |    1.67ms     |
+| **_Group 5_**                   |                     |                |                 |                   |               |
+| ORB + SIFT                      |      500            |       9ms      |  59.60ms        |      82           |    0.30ms     |
+| ORB + BRISK                     |      500            |       9ms      |   1.45ms        |      81           |    0.23ms     |
+| ORB + ORB                       |      500            |       9ms      |  11.50ms        |      83           |    0.25ms     | 
+| ORB + FREAK                     |      500            |       9ms      |  50.30ms        |      48           |    0.14ms     |
+| ORB + AKAZE                     |      500            |       9ms      |  77.50ms        |      57           |    0.28ms     |
+| ORB + BRIEF                     |      500            |       9ms      |   2.10ms        |      56           |    0.60ms     |
+| **_Group 6_**                   |                     |                |                 |                   |               |
+| AKAZE + SIFT                    |      1343           |      79ms      |     38ms        |      139          |    0.68ms     |
+| AKAZE + BRISK                   |      1343           |      79ms      |   1.84ms        |      134          |    0.38ms     |
+| AKAZE + ORB                     |      1343           |      79ms      |   8.80ms        |      130          |    0.55ms     |
+| AKAZE + FREAK                   |      1343           |      79ms      |     52ms        |      130          |    0.46ms     |
+| AKAZE + AKAZE                   |      1343           |      79ms      |     79ms        |      139          |    0.48ms     |
+| AKAZE + BRIEF                   |      1343           |      79ms      |   2.70ms        |      132          |     1.0ms     |
+| **_Group 7_**                   |                     |                |                 |                   |               | 
+| SIFT + SIFT                     |      1384           |     119ms      |    104ms        |       86          |    0.49ms     | 
+| SIFT + BRISK                    |      1384           |     119ms      |   1.62ms        |       60          |    0.30ms     |
+| SIFT + FREAK                    |      1384           |     119ms      |  48.97ms        |       62          |    0.30ms     |
+| SIFT + AKAZE                    |      1384           |     119ms      |     73ms        |       40          |    0.36ms     |
+| SIFT + BRIEF                    |      1384           |     119ms      |   1.98ms        |       80          |    0.77ms     |
+
+
+
+### MP.9 Time Consumption
 To log the time it takes for keypoint detection and descriptor extraction. The results must be entered into a spreadsheet and based on this information you will then suggest the TOP3 detector / descriptor combinations as the best choice for our purpose of detecting keypoints on vehicles. Finally, in a short text, please justify your recommendation based on your observations and on the data you collected.
+
+#### First Impression according to the above table statistics:
+
+| Keypoint Detector |        Justification                         |     | Descriptors | Justification                                           |  
+| ---               | ---                                          | --- | ---         | ---                                                     | 
+|    Harris         | Bad, detected keypoints less than 200        |     |    SIFT     | Bad, Extraction Time too long, more than 50ms on average|        
+|    Shi-Tomasi     | Good in number of keypoint and detection time|     |    BRISK    | Good, Extraction Time less than 2ms                     |     
+|    FAST           | Very Good, more keypoints detected with less time| |    ORB      | Good, Extraction Time around 3ms                        |    
+|    BRISK          | Good in keypoint detection, with slightly long time||   FREAK    | Bad, Extraction Time more than 50ms                     |     
+|    ORB            | Good in detection and extraction time        |     |    AKAZE    | Bad, Extraction Time worse than FREAK, more than 70ms   |     
+|    AKAZE          | Bad, Detection time around 80ms              |     |    BRIEF    | Good, Extraction Time less than 3ms                     |     
+|    SIFT           | Bad, Detection time too long                 |     |             |                                                         |  
+
+
+#### Analysis in the following aspects
+
+**Number of keypoints**(ROI: preceding vehicle; In descending order)
+| BRISK | AKAZE | FAST | SIFT | SHI-TOMASI | ORB | HARRIS |
+|------ |------ |----- |----- |-------     |---- | -------|
+| 276   | 167   | 149  | 138  | 118        | 116 | 25     |
+
+
+**Keypoint Detection timings**
+| FAST    |   ORB   | SHI-TOMASI |  HARRIS   |  BRISK    |  
+|-------  | ------- |  --------  |  -------  | --------- | 
+| 1.47 ms | 9 ms    | 15.8 ms    | 17.5 ms   | 40 ms     | 
+
+
+**Descriptor extraction timings**
+| BRISK   | BRIEF   | ORB     | SIFT     | AKAZE    |  
+|---------|---------|---------|----------|----------|  
+| 1.65 ms | 2.5 ms  |  6.2 ms |    49 ms |    77 ms | 
+
+
+**Number of matches**
+|   Place   |  Combination(s)                |  
+|  ------   |---------------------           |  
+| 1st (186) |  BRISK + BRIEF                 |  
+| 2nd (180) |  BRISK + SIFT                  |  
+| 3rd (170) |  BRISK + BRISK                 |  
+| 4th (161) |  BRISK + FREAK                 |
+| 5th (160) |  BRISK + ORB                   |
+| 6th (139) |   AKAZE + SIFT,  AKAZE + AKAZE |
+| 7th (134) |   AKAZE + BRISK                |
+| 8th (132) |   AKAZE + BRIEF                |
+| 9th (130) |   AKAZE + FREAK, AKAZE + ORB   |
+| 10th (123) |  FAST + AKAZE                 |
+| 11th (117) |  FAST + SIFT,   FAST + BRIEF  |
+| 12th (115) |  FAST + ORB                   |
+
+
+#### Summary
+By considering all of these variations, I would say the top three Detector/Descriptor combinations are:
+
+|     Place      |            Combination                     | 
+|  ------------  |           -------------                    |
+|   1st place    | BRISK + BRIEF  (if prefer higher accuracy )| 
+|   2nd place    | FAST + BRIEF   (if prefer speed)                     |    
+|   3nd place    | BRISK + BRISK  (accuracy and speed are average level)| 
