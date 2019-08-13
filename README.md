@@ -338,27 +338,29 @@ To log the time it takes for keypoint detection and descriptor extraction. The r
 
 #### Analysis in the following aspects
 
-**Number of keypoints**(ROI: preceding vehicle; In descending order)
+**Number of keypoints**
+ROI: preceding vehicle; In descending order
+
 | BRISK | AKAZE | FAST | SIFT | SHITOMASI | ORB | HARRIS |
-|------ |------ |----- |----- |-------     |---- | -------|
-| 276   | 167   | 149  | 138  | 118        | 116 | 25     |
+|  ---  |  ---  | ---  | ---  |    ---    | --- | ---    |
+| 276   | 167   | 149  | 138  |    118    | 116 | 25     |
 
 
 Keypoint Detection timings
 | FAST    |   ORB   | SHITOMASI |  HARRIS   |  BRISK    |  
-|-------  | ------- |  --------  |  -------  | --------- | 
-| 1.47 ms | 9 ms    | 15.8 ms    | 17.5 ms   | 40 ms     | 
+|  ---    |   ---   |    ---    |    ---    |   ---     | 
+| 1.47 ms | 9 ms    | 15.8 ms   | 17.5 ms   |  40 ms    | 
 
 
 Descriptor extraction timings
-| BRISK   | BRIEF   | ORB     | SIFT     | AKAZE    |  
-|---------|---------|---------|----------|----------|  
-| 1.65 ms | 2.5 ms  |  6.2 ms |    49 ms |    77 ms | 
+| BRISK   | BRIEF   |   ORB   |  SIFT    |  AKAZE    |  
+|   ---   |   ---   |   ---   |  ---     |  ---      |  
+| 1.65 ms | 2.5 ms  |  6.2 ms |  49 ms   |    77 ms  | 
 
 
 Number of matches
 |   Place   |  Combination                   |  
-|  ------   |---------------------           |  
+|    ---    |          ---                   |  
 | 1st (186) |  BRISK + BRIEF                 |  
 | 2nd (180) |  BRISK + SIFT                  |  
 | 3rd (170) |  BRISK + BRISK                 |  
