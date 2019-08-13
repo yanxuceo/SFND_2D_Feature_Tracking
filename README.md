@@ -339,13 +339,13 @@ To log the time it takes for keypoint detection and descriptor extraction. The r
 #### Analysis in the following aspects
 
 **Number of keypoints**(ROI: preceding vehicle; In descending order)
-| BRISK | AKAZE | FAST | SIFT | SHI-TOMASI | ORB | HARRIS |
+| BRISK | AKAZE | FAST | SIFT | SHITOMASI | ORB | HARRIS |
 |------ |------ |----- |----- |-------     |---- | -------|
 | 276   | 167   | 149  | 138  | 118        | 116 | 25     |
 
 
 **Keypoint Detection timings**
-| FAST    |   ORB   | SHI-TOMASI |  HARRIS   |  BRISK    |  
+| FAST    |   ORB   | SHITOMASI |  HARRIS   |  BRISK    |  
 |-------  | ------- |  --------  |  -------  | --------- | 
 | 1.47 ms | 9 ms    | 15.8 ms    | 17.5 ms   | 40 ms     | 
 
