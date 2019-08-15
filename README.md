@@ -250,33 +250,33 @@ Harris, Shi-Tomasi and FAST has similar, relatively small neighborhood size; and
 
 **_Harris Keypoints_**
 <p align = "center">
-  <img src="media/HARRIS_keypoint.png"  width="640" height="420">
+  <img src="media/HARRIS_keypoint.png"  width="480" height="240">
 </p>
 
 BRISK and ORB, however, have obvious larger neighborhood size; and they look like cluttered and overlapped with each other.
 
 **_BRISK Keypoints_**
 <p align = "center">
-  <img src="media/BRISK_Keypoint.png"  width="640" height="420">
+  <img src="media/BRISK_Keypoint.png"  width="480" height="240">
 </p>
 
 
 **_ORB Keypoints_**
 <p align = "center">
-  <img src="media/ORB_keypoint.png"  width="640" height="420">
+  <img src="media/ORB_keypoint.png"  width="480" height="240">
 </p>
 
 
 AKAZE and SIFT have similar property in terms of the neighborhood distribution size, there are small and relatively large keypoint radius, and they are distributed uniformly on the detected objects.
 **_AKAZE Keypoints_**
 <p align = "center">
-  <img src="media/AKAZE_keypoint_1.png"  width="640" height="420">
+  <img src="media/AKAZE_keypoint_1.png"  width="480" height="240">
 </p>
 
 
 **_SIFT Keypoints_**
 <p align = "center">
-  <img src="media/SIFT_keypoint_1.png"  width="640" height="420">
+  <img src="media/SIFT_keypoint_1.png"  width="480" height="240">
 </p>
 
 
